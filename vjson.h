@@ -702,9 +702,9 @@ template <typename K, typename T>
 EResult Value::TryInterpretAtKey( K&& key, T &outResult ) const
 {
 	if ( _type != kObject ) return kNotObject;
-	auto it = _object.find( key );
-	if ( it == _object.end() ) return kBadKey;
-	return it->second.TryInterpret( outResult );
+	const Value *v = ValuePtrAtKey( key );
+	if ( !v ) return kBadKey;
+	return v->TryInterpret( outResult );
 }
 
 template <typename T>
