@@ -84,12 +84,13 @@ struct ObjectKeyLess
 {
 	using is_transparent = void;
 
-	bool operator()( const std::string &l, const std::string &r ) const { return strcmp( l.c_str(), r.c_str() ) < 0; }
+	// Use compare() rather than strcmp() so keys containing \u0000 don't collide
+	bool operator()( const std::string &l, const std::string &r ) const { return l.compare( r ) < 0; }
 
 	// With C++14, we don't need to make a copy of the key to do lookup,
 	// so long as the comparator can compare the types.
-	bool operator()( const std::string &l, const char *r ) const { return strcmp( l.c_str(), r ) < 0; }
-	bool operator()( const char *l, const std::string &r ) const { return strcmp( l, r.c_str() ) < 0; }
+	bool operator()( const std::string &l, const char *r ) const { return l.compare( r ) < 0; }
+	bool operator()( const char *l, const std::string &r ) const { return r.compare( l ) > 0; }
 
 	// FIXME string_view?
 };
